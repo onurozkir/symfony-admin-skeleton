@@ -1,0 +1,73 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.removeBtn').click(function () {
+            var dataURL = $(this).attr('dataURL');
+            var myCallback = function(choice){
+                if(choice){
+                    $.post(dataURL,{},function (response) {
+                        window.location.reload();
+                    })
+                }
+            };
+            notif_confirm({
+                'message': 'Kaydı Silmek İstediğinizden Emin misiniz?',
+                'textaccept': 'Evet',
+                'textcancel': 'Hayır',
+                'callback': myCallback
+            })
+        });
+
+        $('.data-toogle-check').change(function () {
+            var dataId = $(this).attr('dataID');
+            var dataActiveValue = $(this).prop('checked');
+            var dataAjaxUrl = $(this).attr('data-ajax-url');
+            $.ajax({
+                type: "POST",
+                url: dataAjaxUrl,
+                data: {
+                    active: dataActiveValue,
+                    dataId: dataId
+                }
+            });
+        });
+        $.widget.bridge('uibutton', $.ui.button);
+        {% for label, messages  in app.flashes %}
+            {% for flashMessage in messages  %}
+
+            $(document).ready(function () {
+                notif({
+                    msg: " {{ flashMessage }}",
+                    type: "{{ label }}",
+                    timeout: 2000,
+                    opacity: 1,
+                    clickable: false
+                });
+            });
+            {% endfor %}
+        {% endfor %}
+    });
+</script>
+<script type="text/javascript">
+    //<![CDATA[
+    $(document).ready(function(){
+
+        $('input[type=checkbox]').iCheck({
+            checkboxClass: 'icheckbox_flat-blue'
+        });
+        $('#frm-list input[type=checkbox]').on('ifChanged', function(event){
+            var count = $('#frm-list input[type=checkbox]:checked').length;
+            if (count > 0) $('#btn_bulkDelete').removeAttr('disabled'); else { $('#btn_bulkDelete').attr({'disabled':'disabled'}); }
+        });
+
+        $('body').data('editModule', 'blog');
+
+    });
+    //]]>
+</script>
+<!-- Bootstrap 3.3.7 -->
+<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/notifIt.js') }}"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="{{ asset('assets/js/adminlte.min.js') }}"></script>
+<script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
+<script src="{{ asset('assets/js/demo.js') }}"></script>

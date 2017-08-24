@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <section class="content-header"><h1>{{ page_header.page_header }}{% set childUrl = page_header.href|split('/') %}{% if childUrl|length >= 3 %}<small>> {{ page_header.herePage }}</small>{% endif %}</h1>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ page_header.href }}"><i class="fa fa-dashboard"></i>{{ page_header.level }}</a>
+            </li>
+            <li class="active">{{ page_header.herePage }}</li>
+        </ol>
+    </section>
+    <section class="content container-fluid">
+        <a href="javascript:history.back();" class="btn btn-small btn-primary pull-right"><i class="icon-arrow-left icon-white"></i> Back</a>
+        <hr>
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ page_header.level }} Editing Form</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    {{ form_start(form, { 'method': 'POST' }) }}
+                    {{ form_errors(form) }}
+                    <div class="box-body">
+                        {{ form_row(form.title) }}
+                        {{ form_row(form.address) }}
+                        {{ form_row(form.companyName) }}
+                        <div style="margin-top: 10px;">
+                            <div class="col-md-4">
+                                {{ form_row(form.phone) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.phoneTwo) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.mail) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.fax) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.cityId) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.type) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.authPerson) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.coordinate) }}
+                                <p class="help-block"><i>26,123456;38,123456 tarzında giriniz</i></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.sort) }}
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                        {{ form_row(form.save, { 'attr': { 'style': 'margin-top:10px;'}}) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

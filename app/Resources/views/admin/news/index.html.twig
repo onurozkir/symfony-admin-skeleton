@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <section class="content-header"><h1>{{ page_header.page_header }}{% set childUrl = page_header.href|split('/') %}{% if childUrl|length >= 3 %}<small>{{ page_header.childUrl }}</small>{% endif %}</h1>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ page_header.href }}"><i class="fa fa-dashboard"></i>{{ page_header.level }}</a>
+            </li>
+            <li class="active">{{ page_header.herePage }}</li>
+        </ol>
+    </section>
+    <section class="content container-fluid">
+        <a href="{{ page_header.href }}/add" data-toggle="tooltip" title="Yeni Ekle" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>  Yeni Ekle</a>
+        <hr>
+        <pre>
+
+            </pre>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <form action="{{ path("admin_news_index") }}" method="post">
+                    <div class="box-header">
+                        <h3 class="box-title">{{ page_header.herePage }} Tables</h3>
+                        {% if app.session.get('filterNews')|length > 0 %}
+                            <a href="{{ page_header.href }}/reset-filter/clean/"  class="btn btn-sm btn-warning pull-right" style="margin-right: 160px; margin-top: -5px;">Temizle</a>
+                        {% endif %}
+                        <div class="box-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="table-search" autofocus class="form-control pull-right" placeholder="Search" value="{% if app.session.get('filterNews') != '' %}{{ app.session.get('filterNews') }}{% else %}{% endif %}">
+                                <div class="input-group-btn">
+                                    <input type="submit" class="btn btn-default" name="filterKeys" id="filterKeys" value="Bul.."/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <form action="{{ path('admin_news_bulkDelete') }}" method="post" id="frm-list">
+                        <table class="table table-hover">
+                            <tr>
+                                <th width="100"><input type="submit" class="btn btn-danger" value="Seçilileri Sil" id="btn_bulkDelete" name="btn_bulkDelete" onclick="javascipt:return confirm('Seçili kayıtları silmek istediğinize emin misiniz?\nUyarı: Bir üst kategori silerseniz, tüm alt kategorileri de otomatik olarak silinir.');" /></th>
+                                <th width="300">Haber Resmi</th>
+                                <th width="250">Title</th>
+                        <!--    <th width="300">Category</th> -->
+                                <th width="250">Date</th>
+                                <th width="200">Durumu</th>
+                                <th>İşlemler</th>
+                            </tr>
+                            {% for value in news %}
+                            <tr>
+                                <td><label for="{{ value.id }}"><input type="checkbox" name="bulkDelete_{{ value.id }}" id="bulkDelete_{{ value.id }}" value="{{ value.id }}" /></label></td>
+                                <td><img src="{{ asset('assets/uploads/images/' ~ value.imageUrl) }}" class="img-thumbnail">
+                                </td>
+                                <td>{{ value.title }}</td>
+                          <!--  <td> MUHAKKAK BİR ARA BAK </td>   --->
+                                <td>{{ value.createDate|date('d-m-Y') }}</td>
+                                <td><input type="checkbox"
+                                           class="data-toogle-check"
+                                            {% if value.active == 1 %} checked {% else %}{% endif %}
+                                           dataID = "{{ value.id }}"
+                                           name="active"
+                                           data-toggle="toggle"
+                                           data-on="Aktif"
+                                           data-off="Pasif"
+                                           data-onstyle="success"
+                                           data-offstyle="danger"
+                                           data-size="small"
+                                           data-ajax-url="{{ path('admin_news_activeSetter',{id:value.id}) }}"
+                                    />
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_news_edit', {id: value.id}) }}" class="btn btn-success" title="Edit">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{{ path('admin_news_detail', {id: value.id}) }}" class="btn btn-default" title="Detail">
+                                        <i class="fa fa-eye"></i> Detail
+                                    </a>
+                                    <a dataUrl="{{ path('admin_news_delete', {id: value.id}) }}" class="btn btn-danger removeBtn" title="Delete">
+                                        <i class="fa fa-remove"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor%}
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+    </section>
+
+
+{% endblock %}

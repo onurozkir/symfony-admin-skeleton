@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+
+    <section class="content-header"><h1>{{ page_header.page_header }}{% set childUrl = page_header.href|split('/') %}{% if childUrl|length >= 3 %}<small>{{ page_header.childUrl }}</small>{% endif %}</h1>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ page_header.href }}"><i class="fa fa-dashboard"></i>{{ page_header.level }}</a>
+            </li>
+            <li class="active">{{ page_header.herePage }}</li>
+        </ol>
+
+    </section>
+    <section class="content container-fluid">
+        <a href="{{ page_header.href }}/add" data-toggle="New Record" title="New Record" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>  New Record</a>
+        <hr>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <form action="{{ path("admin_contact_index") }}" method="post">
+                        <div class="box-header">
+                            <h3 class="box-title">{{ page_header.herePage }} Tables</h3>
+                            {% if app.session.get('filterContactAddress')|length > 0 %}
+                                <a href="{{ page_header.href }}/reset-filter/clean/"  class="btn btn-sm btn-warning pull-right" style="margin-right: 160px; margin-top: -5px;">Clear</a>
+                            {% endif %}
+                            <div class="box-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table-search" autofocus class="form-control pull-right table-search" placeholder="Search" value="{% if app.session.get('filterContactAddress') != '' %}{{ app.session.get('filterContactAddress') }}{% else %}{% endif %}">
+                                    <div class="input-group-btn">
+                                        <input type="submit" class="btn btn-default" name="filterKeys" id="filterKeys" value="Bul.."/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <form action="{{ path('admin_contactaddress_bulkDelete') }}" method="post" id="frm-list">
+                            <table class="table table-hover">
+                                <tr>
+                                    <th width="75"><input type="submit" class="btn btn-danger" value="Bulk Delete" id="btn_bulkDelete" name="btn_bulkDelete" onclick="javascipt:return confirm('Seçili kayıtları silmek istediğinize emin misiniz?\nUyarı: Bir üst kategori silerseniz, tüm alt kategorileri de otomatik olarak silinir.');" /></th>
+                                    <th width="300"><i class="fa fa-sort-alpha-asc"></i> {{ knp_pagination_sortable(contactAddress, 'Company Name', 'cca.title') }}</th>
+                                    <th width="250">Address</th>
+                                    <th width="150">Phone</th>
+                                    <th width="200"><i class="fa fa-sort-alpha-asc"></i> {{ knp_pagination_sortable(contactAddress, 'Auth Person', 'cca.authPerson') }}</th>
+                                    <th width="150"><i class="fa fa-sort-alpha-asc"></i> {{ knp_pagination_sortable(contactAddress, 'City', 'cca.cityId') }}</th>
+                                    <th width="150">Status</th>
+                                    <th>Process</th>
+                                </tr>
+                                {% for value in contactAddress %}
+                                    <tr class="category-bundle">
+
+                                        <td class="text-center"><label for="{{ value.id }}"><input type="checkbox" name="bulkDelete_{{ value.id }}" id="bulkDelete_{{ value.id }}" value="{{ value.id }}" /></label></td>
+                                        <td>{{ value.title }}</td>
+                                        <td>{{ value.address }}</td>
+                                        <td>{{ value.phone }}</td>
+                                        <td>{{ value.authPerson }}</td>
+                                        <td>{{ value.cityId }}</td>
+                                        <td><input type="checkbox"
+                                                   class="data-toogle-check"
+                                                    {% if value.active == 1 %} checked {% else %}{% endif %}
+                                                   dataID = "{{ value.id }}"
+                                                   name="active"
+                                                   data-toggle="toggle"
+                                                   data-on="Active"
+                                                   data-off="Passive"
+                                                   data-onstyle="success"
+                                                   data-offstyle="danger"
+                                                   data-size="small"
+                                                   data-ajax-url="{{ path('admin_contactaddress_activeSetter',{id:value.id}) }}"
+                                            />
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('admin_contactaddress_edit', {id: value.id}) }}" class="btn btn-success" title="Edit">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{{ path('admin_contactaddress_detail', {id: value.id}) }}" class="btn btn-default" title="Detail">
+                                                <i class="fa fa-eye"></i> Detail
+                                            </a>
+                                            <a dataUrl="{{ path('admin_contactaddress_delete', {id: value.id}) }}" class="btn btn-danger removeBtn" title="Delete">
+                                                <i class="fa fa-remove"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </form>
+                    </div>
+                    <div class="navigation text-right">
+                        {{ knp_pagination_render(contactAddress) }}
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+
+                <!-- /.box -->
+            </div>
+        </div>
+    </section>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+            $('input[type=checkbox]').iCheck({
+                checkboxClass: 'icheckbox_flat-blue'
+            });
+            $('#frm-list input[type=checkbox]').on('ifChanged', function(event){
+                var count = $('#frm-list input[type=checkbox]:checked').length;
+                if (count > 0) $('#btn_bulkDelete').removeAttr('disabled'); else { $('#btn_bulkDelete').attr({'disabled':'disabled'}); }
+            });
+            $('body').data('editModule', 'blog');
+        });
+        //]]>
+    </script>
+{% endblock %}
+

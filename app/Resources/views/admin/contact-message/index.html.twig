@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <section class="content-header"><h1>{{ page_header.page_header }}{% set childUrl = page_header.href|split('/') %}{% if childUrl|length >= 3 %}<small>{{ page_header.childUrl }}</small>{% endif %}</h1>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ page_header.href }}"><i class="fa fa-dashboard"></i>{{ page_header.level }}</a>
+            </li>
+            <li class="active">{{ page_header.herePage }}</li>
+        </ol>
+
+    </section>
+    <section class="content container-fluid">
+        <a href="{{ page_header.href }}/add" data-toggle="New Record" title="New Record" class="btn btn-warning pull-right">  Test Message</a>
+        <hr>
+        {{ dump(contactMessage) }}
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="box box-primary">
+                    <form action="{{ path("admin_contactmessage_index") }}" method="post">
+                        <div class="box-header">
+                            <h3 class="box-title">{{ page_header.herePage }} Tables</h3>
+                            {% if app.session.get('filterContactMessage')|length > 0 %}
+                                <a href="{{ page_header.href }}/reset-filter/clean/"  class="btn btn-sm btn-warning pull-right" style="margin-right: 160px; margin-top: -5px;">Clear</a>
+                            {% endif %}
+                            <div class="box-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table-search" autofocus class="form-control pull-right table-search" placeholder="Search" value="{% if app.session.get('filterContactMessage') != '' %}{{ app.session.get('filterContactMessage') }}{% else %}{% endif %}">
+                                    <div class="input-group-btn">
+                                        <input type="submit" class="btn btn-default" name="filterKeys" id="filterKeys" value="Search.."/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <!-- /.box-header -->
+                    <div class="box-body no-padding">
+                        {#<div class="mailbox-controls">#}
+                            {#<div class="navigation text-right">#}
+                                {#{{ knp_pagination_render(contactMessage) }}#}
+                            {#</div>#}
+                        {#</div>#}
+                        <div class="table-responsive mailbox-messages">
+                            <form action="{{ path('admin_contactmessage_bulkDelete') }}" method="post" id="frm-list">
+                                <table class="table table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th width="160" class="text-center">
+                                            <button type="button" class="btn btn-default btn-sm checkbox-toggle" title="Choice"><i class="fa fa-square-o"></i>
+                                            </button>
+                                            <div class="btn-group">
+                                                <button type="submit" title="Bulk Delete" value="Bulk Delete" id="btn_bulkDelete" name="btn_bulkDelete" class="btn btn-default btn-sm"><i class="fa fa-trash-o" onclick="javascipt:return confirm('Seçili kayıtları silmek istediğinize emin misiniz?\nUyarı: Bir üst kategori silerseniz, tüm alt kategorileri de otomatik olarak silinir.');"></i></button>
+                                            </div>
+                                            {% if app.request.attributes.get("_route") == "admin_show_important" %}
+                                            <a href="{{ path('admin_contactmessage_index') }}"><button type="button" class="btn btn-default btn-sm" title="Show All"><i class="fa fa-refresh"></i></button></a>
+                                            {% endif %}
+                                            <a href="{{ path('admin_show_important',{reference: "u"}) }}"><button type="button" class="btn btn-default btn-sm" title="Show Important"><i class="fa fa-star"></i></button></a>
+                                        </th>
+                                        <th width="100"> {{ knp_pagination_sortable(contactMessage, 'Important', 'ccm.important') }}</th>
+                                        <th width="200"><i class="fa fa-sort-alpha-asc"></i> {{ knp_pagination_sortable(contactMessage, 'Name Surname', 'ccm.nameSurname') }}</th>
+                                        <th width="400">Message</th>
+                                        <th width="200"><i class="fa fa-sort-alpha-asc"></i> {{ knp_pagination_sortable(contactMessage, 'Date', 'ccm.sendDate') }}</th>
+                                        <th width="150">Attachment </th>
+                                        <th width="150">Mail</th>
+                                        <th>Process</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for value in contactMessage %}
+                                        <tr {% if value.readByAdmin == 0 %}class="bg-light-blue-gradient"{% endif %}>
+                                            <td class="text-center"><input type="checkbox" name="bulkDelete_{{ value.id }}" id="bulkDelete_{{ value.id }}" value="{{ value.id }}" /></td>
+                                            <td class="mailbox-star">
+                                                <a data-important-url="{{ path('admin_contactmessage_importantSetter',{id:value.id}) }}"
+                                                   class="toggle-important"
+                                                   data-important-id="{{ value.id }}"
+                                                   data-important-prop="{% if value.important == 1 %}checked{% else %}non-checked{% endif %}" >
+                                                    {% if value.important == 1 %}
+                                                        <i class="fa fa-star text-yellow"></i>
+                                                    {% else %}
+                                                        <i class="fa fa-star-o text-yellow"></i>
+                                                    {% endif %}
+                                                </a>
+                                            </td>
+                                            <td class="mailbox-name">{{ value.nameSurname }}</td></td>
+                                            <td class="mailbox-subject"><b>{{ value.messageTitle }}</b> - {% if value.message|length > 50 %}{{ value.message|slice(0,50) }}...{% else %}{{ value.message }}{% endif %}
+                                            </td>
+                                            <td class="mailbox-date">{{ value.sendDate|date('d-m-Y H:i:s') }}</td>
+                                            <td class="mailbox-attachment">{% if value.attachment != "" %}<i class="fa fa-paperclip"></i>{% else %}--not attachment{% endif %}</td>
+                                            <td class="mailbox-mail">{{ value.email }}</td>
+                                            <td>
+                                                <a href="{{ path('admin_contactmessage_detail', {id: value.id}) }}" class="btn btn-default" title="Detail">
+                                                <i class="fa fa-eye"></i> Detail
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </form>
+                            <!-- /.table -->
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer no-padding">
+                        <div class="mailbox-controls">
+                            <div class="navigation text-right">
+                                {{ knp_pagination_render(contactMessage) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /. box -->
+
+            </div>
+        </div>
+    </section>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.toggle-important').click(function () {
+                var dataImportantId = $(this).attr('data-important-id');
+                var dataAjaxUrl = $(this).attr('data-important-url');
+                var dataImportantValue = $(this).attr('data-important-prop');
+                $.ajax({
+                    type: "POST",
+                    url: dataAjaxUrl,
+                    data: {
+                        active: dataImportantValue,
+                        dataId: dataImportantId
+                    }
+                });
+            });
+        })
+    </script>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(document).ready(function() {
+            $('input[type=checkbox]').iCheck({
+                checkboxClass: 'icheckbox_flat-blue'
+            });
+            $('#frm-list input[type=checkbox]').on('ifChanged', function (event) {
+                var count = $('#frm-list input[type=checkbox]:checked').length;
+                if (count > 0) $('#btn_bulkDelete').removeAttr('disabled'); else {
+                    $('#btn_bulkDelete').attr({'disabled': 'disabled'});
+                }
+            });
+            $('body').data('editModule', 'blog');
+        });
+       //]]>
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            //Enable iCheck plugin for checkboxes
+            //iCheck for checkbox and radio inputs
+            $('.mailbox-messages input[type="checkbox"]').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                radioClass: 'iradio_flat-blue'
+            });
+
+            //Enable check and uncheck all functionality
+            $(".checkbox-toggle").click(function () {
+                var clicks = $(this).data('clicks');
+                if (clicks) {
+                    //Uncheck all checkboxes
+                    $(".mailbox-messages input[type='checkbox']").iCheck("uncheck");
+                    $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
+                } else {
+                    //Check all checkboxes
+                    $(".mailbox-messages input[type='checkbox']").iCheck("check");
+                    $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
+                }
+                $(this).data("clicks", !clicks);
+            });
+
+            //Handle starring for glyphicon and font awesome
+            $(".mailbox-star").click(function (e) {
+                e.preventDefault();
+                //detect type
+                var $this = $(this).find("a > i");
+                var fa = $this.hasClass("fa");
+                //Switch states
+                if (fa) {
+                    $this.toggleClass("fa-star");
+                    $this.toggleClass("fa-star-o");
+                }
+            });
+        });
+    </script>
+{% endblock %}
+

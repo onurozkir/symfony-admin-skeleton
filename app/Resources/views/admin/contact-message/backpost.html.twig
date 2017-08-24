@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<section class="content-header"><h1>{{ page_header.page_header }}{% set childUrl = page_header.href|split('/') %}{% if childUrl|length >= 3 %}<small>> {{ page_header.herePage }}</small>{% endif %}</h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ page_header.href }}"><i class="fa fa-dashboard"></i>{{ page_header.level }}</a>
+        </li>
+        <li class="active">{{ page_header.herePage }}</li>
+    </ol>
+</section>
+<section class="content container-fluid">
+    <a href="javascript:history.back();" class="btn btn-small btn-primary pull-right back-button" title="Back"><i class="icon-arrow-left icon-white"></i> Back</a>
+    <hr>
+    <div class="row">
+
+        <div class="col-md-9">
+            <div class="box box-primary">
+                <form action="">
+                    <div class="box-header with-border">
+                    <h3 class="box-title">{{ page_header.level }} Page</h3>
+                </div>
+                    <div class="box-body">
+                    <div class="form-group">
+                        <label for="mailto" > <strong> To: </strong></label>
+                        <input class="form-control" id="mailto" value="{{ post.email }}">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" id="mailAbout" value="{{ post.messageTitle }} About">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="compose-textarea" class="form-control" style="height: 300px">
+                            <h2>Dear {{ post.nameSurname }},</h2>
+
+                        </textarea>
+                        <script>
+                            $(function () {
+                                //Add text editor
+                                $("#compose-textarea").wysihtml5();
+                            });
+                        </script>
+                    </div>
+                </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-envelope-o"></i> Send</button>
+                    </div>
+                </div>
+                </form>
+                <!-- /.box-footer -->
+            </div>
+            <!-- /. box -->
+            <div class="dump">
+                {{ dump(post) }}
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{ post.nameSurname }}' s Message</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label>About {{ post.messageTitle }}</label><br>
+                        <i>{{ post.sendDate|date('d-m-Y') }}</i>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" cols="10" rows="23">{{ post.message }}</textarea>
+                    </div>
+
+                </div>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}
