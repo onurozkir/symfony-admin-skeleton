@@ -3,9 +3,5 @@ app:
     type: annotation
     prefix: /
 
-root:
-    path: /
-    defaults:
-        _controller: FrameBundle:Redirect:urlRedirect
-        path: /
-        permanent: true
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"

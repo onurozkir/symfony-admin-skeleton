@@ -1,6 +1,6 @@
 {
     "name": "symfony/framework-standard-edition",
-    "license": "MIT",
+    "license": "GNU",
     "type": "project",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
@@ -17,6 +17,7 @@
         "php": ">=5.5.9",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
+        "friendsofsymfony/user-bundle": "~2.0",
         "incenteev/composer-parameter-handler": "^2.0",
         "knplabs/knp-paginator-bundle": "^2.6",
         "sensio/distribution-bundle": "^5.0.19",

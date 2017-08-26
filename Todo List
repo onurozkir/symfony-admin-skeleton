@@ -3,3 +3,5 @@ todo // ContactAddress kısmının edit kısmında cityId seçili olarak gelmiyo
 todo // İskelet servera atılınca mailer atması için crontab üzerinden zamanlanmış
 todo // php bin/console swiftmailer:spool:send --time-limit-50000 gibi bir zamanlama yapılmalı
 
+todo // fosuserbundle viewsleri tasarımları düzenlencek
+

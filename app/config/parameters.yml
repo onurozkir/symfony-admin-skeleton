@@ -9,6 +9,4 @@ parameters:
     mailer_host: smtp.gmail.com
     mailer_user: onurozkir1925@gmail.com
     mailer_password: alcarcon902635
-    mailer_address: onurozkir@hotmail.com
     secret: sy_admin_skeleton_
-
